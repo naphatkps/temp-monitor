@@ -8,7 +8,5 @@ model = ForcastModel(config.MODEL_PATH)
 
 @router.post("/predict/", response_model=PredictionResponse)
 async def predict_temperature(data: PredictionRequest):
-
     prediction = model.predict(data)
-    print("PRED",prediction)
     return {"prediction_temperatures": prediction}
