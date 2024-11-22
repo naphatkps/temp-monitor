@@ -11,6 +11,7 @@ class Config:
     ML_SERVICE_URL = os.getenv("ML_SERVICE_URL")
     LOGGER_SERVICE_URL = os.getenv("LOGGER_SERVICE_URL")
     COORDINATE_API_URL = os.getenv("COORDINATE_API_URL")
+    NOTI_SERVICE_URL = os.getenv("NOTI_SERVICE_URL")
 
 
 config = Config()

@@ -5,6 +5,8 @@ from app.models.response import Response
 class UserRequest(BaseModel):
     email: EmailStr
     name: str
+    city: str
+    country: str
 
 class UserBase(UserRequest):
     id: Optional[str] = Field(default=None, alias="_id")
