@@ -1,5 +1,5 @@
 <div align="center">
-	<img src="./assets/wp.jpg" width="" height="500" >
+	<img src="./assets/wp.jpg" width="" height="" >
 	<p></p>
 	<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/naphatkps/temp-monitor?style=for-the-badge&color=orange">
 	<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/naphatkps/temp-monitor?style=for-the-badge&color=blue">
