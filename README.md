@@ -1,3 +1,16 @@
+<div align="center">
+	<img src="./assets/wp.jpg" width="" height="500" >
+	<p></p>
+	<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/naphatkps/temp-monitor?style=for-the-badge&color=orange">
+	<img alt="GitHub watchers" src="https://img.shields.io/github/watchers/naphatkps/temp-monitor?style=for-the-badge&color=blue">
+  <img alt="GitHub License" src="https://img.shields.io/github/license/naphatkps/temp-monitor?style=for-the-badge&color=green">
+  <p></p>
+  <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
+  <img src="https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white">
+  <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
+  <img src="https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white">
+</div>
+
 # Temp Monitor
 
 **Temp Monitor** is an open-source project designed for monitoring and managing temperature data efficiently. This repository contains multiple modular services for backend processing, logging, machine learning, and notification management.
@@ -33,7 +46,7 @@ temp-monitor/
 ├── logger_svc/ # Logger service implementation 
 ├── ml_svc/ # Machine learning service implementation 
 ├── notification_svc/ # Notification service
-├── deployment/ # 
+├── deployment/ # Kubernetes manifests and management scripts
 └── README.md # Project documentation
 ```
 
@@ -58,13 +71,18 @@ docker build -t weather_predict ./ml_svc
 docker build -t weather_notification ./notification_svc
 ```
 
-3. Deploy the services and ingress using Kubernetes:
+3. Install the ingress controller:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
+```
+
+4. Deploy the services and ingress using Kubernetes:
 ```bash
 chmod +x ./deployment/manage_manifests.sh
 ./deployment/manage_manifests.sh apply
 ```
 
-4. Access the services via the ingress.
+5. Access the services via the ingress.
 ```bash
 http://localhost/backend
 http://localhost/predict
@@ -85,4 +103,6 @@ git commit -m "Add feature-name"
 git push origin feature-name
 ```
 4. Submit a pull request for review.
+## Contact
+Naphat - naphat.kps@gmail.com
 
