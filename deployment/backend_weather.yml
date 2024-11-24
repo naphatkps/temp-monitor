@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend-weather
-        image: naphat58021/weather_backend
+        image: weather_backend
         imagePullPolicy: Never
         ports:
         - containerPort: 8000

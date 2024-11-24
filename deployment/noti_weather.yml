@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: noti-weather
-        image: naphat58021/weather_noti
+        image: weather_noti
         imagePullPolicy: Never
         ports:
         - containerPort: 8082

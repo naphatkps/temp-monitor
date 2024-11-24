@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: logger-weather
-        image: naphat58021/weather_logger
+        image: weather_logger
         imagePullPolicy: Never
         ports:
         - containerPort: 8000

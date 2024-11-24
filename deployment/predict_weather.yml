@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: predict-weather
-        image: naphat58021/weather_predict
+        image: weather_predict
         imagePullPolicy: Never
         ports:
         - containerPort: 8000
