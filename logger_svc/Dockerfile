@@ -1,25 +1,12 @@
-# Use an official Node.js runtime as a parent image
-FROM node:22
+FROM python:3.9
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /code
 
-# Copy the package.json and package-lock.json files to the working directory
-COPY package*.json ./
+COPY ./requirements.txt /code/requirements.txt
 
-# Install the project dependencies
-RUN npm install
+RUN pip install -r requirements.txt
 
-# Copy the rest of the application code to the working directory
-COPY . .
+COPY ./app /code/app
 
-# Ensure the .env file is copied
-COPY .env.prod .env
-# Expose the port the app runs on
-EXPOSE 82
-
-# Define the command to run the application
-CMD ["node", "server.js"]
-
-# docker build -t naphat58021/weather_logger .
-# docker run -d -p 82:82 --name logger_svc -it naphat58021/weather_logger
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# python3 -m uvicorn app.main:app --reload

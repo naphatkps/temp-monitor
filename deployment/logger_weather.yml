@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logger-weather-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logger-weather
+  template:
+    metadata:
+      labels:
+        app: logger-weather
+    spec:
+      containers:
+      - name: logger-weather
+        image: naphat58021/weather_logger
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logger-weather-service
+spec:
+  selector:
+    app: logger-weather
+  ports:
+  - protocol: TCP
+    port: 82
+    targetPort: 8000
+  type: ClusterIP

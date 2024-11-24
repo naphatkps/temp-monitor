@@ -29,11 +29,17 @@ async def get_current_weather(request: WeatherRequest):
                                 headers={"x-api-key": api_key})
     except Exception as e:
         response = WeatherResponse(
-            data={},
+            data=[],
             success=False,
             message="Failed to fetch coordinates"
         )
         status_code = 500
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e)
+        }
+        requests.post(logger_url, json=logger_data)
         return JSONResponse(content=response.model_dump(), status_code=status_code)
     
     latitude = response.json()[0]["latitude"]
@@ -53,22 +59,33 @@ async def get_current_weather(request: WeatherRequest):
         status_code = 200
 
         response = WeatherResponse(
-            data={
+            data=[{
                 "time": datetime.now().isoformat(),
                 "temperature_2m": current_temperature_2m,
                 "rain": current_rain
-            },
+            }],
             success=True,
             message="Current weather fetched successfully"
         )
+        logger_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": "Current weather fetched successfully"
+        }
+        requests.post(logger_url, json=logger_data)
     except Exception as e:
         response = WeatherResponse(
-            data={},
+            data=[],
             success=False,
             message="Failed to fetch current weather"
         )
         status_code = 500
-
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e)
+        }
+        requests.post(logger_url, json=logger_data)
     return JSONResponse(content=response.model_dump(), status_code=status_code)
 
 @router.post('/predict_weather/', response_model=WeatherResponse)
@@ -81,13 +98,25 @@ async def predict_weather(request: WeatherRequest):
             message="Weather prediction fetched successfully"
         )
         status_code = 200
+        logger_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": "Weather prediction fetched successfully"
+        }
+        requests.post(logger_url, json=logger_data)
     except Exception as e:
         response = WeatherResponse(
-            data={},
+            data=[],
             success=False,
-            message=e
+            message="Failed to fetch weather prediction"
         )
         status_code = 500
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e)
+        }
+        requests.post(logger_url, json=logger_data)
 
     return JSONResponse(content=response.model_dump(), status_code=status_code)
 
@@ -113,7 +142,19 @@ def predict(request: WeatherRequest):
 
     try:
         responses = openmeteo.weather_api(url, params=params)
+        logger_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": "Weather data fetched successfully"
+        }
+        requests.post(logger_url, json=logger_data)
     except Exception as e:
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": "Failed to fetch weather data"
+        }
+        requests.post(logger_url, json=logger_data)
         raise "Failed to fetch weather data"
 
     try:
@@ -137,7 +178,6 @@ def predict(request: WeatherRequest):
         hourly_dataframe = hourly_dataframe[(hourly_dataframe['date'] >= start_time) & (hourly_dataframe['date'] <= current)]
 
         hourly_temperature_2m = hourly_dataframe['temperature_2m'].tolist()
-
         try:
             model_response = requests.post(model_url, json={"temperatures": hourly_temperature_2m})
             response_data = []
@@ -147,8 +187,26 @@ def predict(request: WeatherRequest):
                     "temperature_2m": model_response.json()["prediction_temperatures"][i],
                     "rain": -1
                 })
+            logger_data = {
+                "service": "backend",
+                "level": "Info",
+                "message": "Weather prediction fetched successfully"
+            }
+            requests.post(logger_url, json=logger_data)
         except Exception as e:
+            logger_data = {
+                "service": "backend",
+                "level": "Error",
+                "message": str(e)
+            }
+            requests.post(logger_url, json=logger_data)
             raise "Failed to fetch weather prediction"
     except Exception as e:
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e)
+        }
+        requests.post(logger_url, json=logger_data)
         raise "Failed to process weather data"
     return response_data

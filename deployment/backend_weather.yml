@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-weather-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-weather
+  template:
+    metadata:
+      labels:
+        app: backend-weather
+    spec:
+      containers:
+      - name: backend-weather
+        image: naphat58021/weather_backend
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-weather-service
+spec:
+  selector:
+    app: backend-weather
+  ports:
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
+  type: ClusterIP

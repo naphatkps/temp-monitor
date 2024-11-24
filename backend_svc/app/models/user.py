@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from app.models.response import Response
+from typing import Union, List
 
 class UserRequest(BaseModel):
     email: EmailStr
@@ -18,5 +19,5 @@ class _UserResponse(UserRequest):
     pass
 
 class UserResponse(Response):
-    data: _UserResponse | list[_UserResponse] | dict
+    data: List[_UserResponse]
     

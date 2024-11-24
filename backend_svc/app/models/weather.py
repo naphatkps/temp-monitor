@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from app.models.response import Response
+from typing import Union, List, Optional
 
 class WeatherRequest(BaseModel):
     city: str
@@ -11,4 +12,4 @@ class _WeatherResponse(BaseModel):
     rain: float
 
 class WeatherResponse(Response):
-    data: _WeatherResponse | list[_WeatherResponse] | dict
+    data: List[_WeatherResponse]

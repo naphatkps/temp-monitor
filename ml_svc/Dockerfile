@@ -17,6 +17,7 @@ FROM python:3.9
 
 WORKDIR /code
 
+COPY ./temperature_model.pkl /code/temperature_model.pkl
 COPY ./requirements.txt /code/requirements.txt
 
 RUN pip install -r requirements.txt

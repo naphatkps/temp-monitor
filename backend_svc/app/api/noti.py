@@ -24,6 +24,8 @@ async def noti_user(user_id: str, noti: NotiRequest):
     user = db['users'].find_one({"_id": ObjectId(user_id)})
     if user:
         try:
+            print(user)
+            print(noti)
             response = requests.post(
                 noti_url,
                 json={
@@ -35,23 +37,42 @@ async def noti_user(user_id: str, noti: NotiRequest):
             response = NotiResponse(
                 success=True,
                 message="User notified successfully",
-                data={"temperature": noti.temperature, "user_id": user_id}
+                data=[{"temperature": noti.temperature, "user_id": user_id}]
             )
             status_code = 200
+            logger_data = {
+                "service": "backend",
+                "level": "Info",
+                "message": "User notified successfully",
+            }
+            requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
         except Exception as e:
+            print(e)
             response = NotiResponse(
                 success=False,
                 message="Failed to notify user",
-                data={}
+                data=[]
             )
             status_code = 500
+            logger_data = {
+                "service": "backend",
+                "level": "Error",
+                "message": str(e),
+            }
+        requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
     else:
         response = NotiResponse(
             success=False,
             message="User not found",
-            data={}
+            data=[]
         )
         status_code = 404
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": "User not found",
+        }
+        requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
     return JSONResponse(content=response.model_dump(), status_code=status_code)
 
 @router.post("/noti/", response_model=NotiResponse)
@@ -61,6 +82,7 @@ async def noti_all_users(noti: NotiRequest):
         data = []
         for user in users:
             try:
+                print(user)
                 response = requests.post(
                     noti_url,
                     json={
@@ -71,20 +93,37 @@ async def noti_all_users(noti: NotiRequest):
                 )
                 data.append({"user_id": str(user["_id"]), "temperature": noti.temperature})
             except Exception as e:
-                pass
+                logger_data = {
+                    "service": "backend",
+                    "level": "Error",
+                    "message": str(e),
+                }
+                requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
         response = NotiResponse(
             success=True,
             message="Users notified successfully",
             data=data
         )
         status_code = 200
+        logger_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": "Users notified successfully",
+        }
+        requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
     except Exception as e:
         response = NotiResponse(
             success=False,
             message="Failed to notify users",
-            data={}
+            data=[]
         )
         status_code = 500
+        logger_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e),
+        }
+        requests.post(config.LOGGER_SERVICE_URL, json=logger_data)
     return JSONResponse(content=response.model_dump(), status_code=status_code)
 
 @router.get("/noti/")
@@ -110,3 +149,10 @@ async def task():
     for user in users:
         place = user["city"] + "_" + user["country"]
         response = await noti_user(user_id=str(user["_id"]), noti=NotiRequest(temperature=places[place]["temperature"]))
+
+    logger_data = {
+        "service": "backend",
+        "level": "Info",
+        "message": "Users notified successfully",
+    }
+    requests.post(config.LOGGER_SERVICE_URL, json=logger_data)

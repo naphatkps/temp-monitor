@@ -4,6 +4,7 @@ from app.models.user import UserRequest, UserResponse
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from app.config import config
+import requests
 
 router = APIRouter()
 collection = db['users']
@@ -26,17 +27,29 @@ async def create_user(user: UserRequest):
         response = UserResponse(
             success=False,
             message="Email already exists",
-            data={}
+            data=[]
         )
         status_code = 400
+        log_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": user_data["email"] + " already exists",
+        }
+        requests.post(logger_url, json=log_data)
     else:
         user_id = collection.insert_one(user_data).inserted_id
         response = UserResponse(
             success=True,
             message="User created successfully",
-            data=user_data
+            data=[user_data]
         )
         status_code = 201
+        log_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": user_data["email"] + ", " + str(user_id) + " created successfully",
+        }
+        requests.post(logger_url, json=log_data)
     return JSONResponse(content=response.model_dump(), status_code=status_code)
 
 @router.get("/users/", response_model=UserResponse)
@@ -50,11 +63,23 @@ async def get_users():
             data=users
         )
         status_code = 200
+        log_data = {
+            "service": "backend",
+            "level": "Info",
+            "message": "Users fetched successfully",
+        }
+        requests.post(logger_url, json=log_data)
     except Exception as e:
         response = UserResponse(
             success=False,
             message="Failed to fetch users",
-            data={}
+            data=[]
         )
         status_code = 500
+        log_data = {
+            "service": "backend",
+            "level": "Error",
+            "message": str(e),
+        }
+        requests.post(logger_url, json=log_data)
     return JSONResponse(content=response.model_dump(), status_code=status_code)

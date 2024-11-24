@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: predict-weather-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /backend(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: backend-weather-service
+            port:
+              number: 8000
+      - path: /predict(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: predict-weather-service
+            port:
+              number: 5050
+      - path: /logger(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: logger-weather-service
+            port:
+              number: 82
+      - path: /noti(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: noti-weather-service
+            port:
+              number: 8888
